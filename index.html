@@ -451,7 +451,7 @@ function updateKpi(){
       } else if(type==='leave'){
         title='🚪 2026년 퇴사자';
         var leaveData=JSON.parse(localStorage.getItem('qaLeave')||'[]');
-        var leaveList=leaveData.filter(function(l){return l.year===2026;});
+        var leaveList=leaveData.filter(function(l){return l.year===2026;}).sort(function(a,b){if(a.date!==b.date)return a.date<b.date?-1:1;return a.name<b.name?-1:1;});
         items=leaveList.map(function(l){
           return '<li><b style="color:#dc2626">'+l.name+'</b><span style="display:block;font-size:12px;color:var(--muted);margin-top:2px">'+l.date+' · '+l.note+'</span></li>';
         });
