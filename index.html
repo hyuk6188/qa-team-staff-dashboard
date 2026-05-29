@@ -68,11 +68,11 @@ select option,
 <main class="wrap">
 <section class="hero">
   <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px">
-    <div><div class="eyebrow">EMPLOYEE REPORT</div><h1>품질보증팀 인원현황</h1></div>
+    <div><div class="eyebrow">EMPLOYEE REPORT</div><h1>품질보증팀 인원현황</h1><p style="margin:6px 0 0;color:#dbeafe;font-size:14px">목제가구의 생산부터 사후관리까지 전 과정의 품질 및 고객 만족을 보증합니다.</p></div>
     <button id="openDataMgr" style="border:0;border-radius:16px;background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.35);color:#fff;font-weight:900;font-size:14px;padding:12px 20px;cursor:pointer;margin-top:6px">⚙️ 데이터 관리</button>
   </div>
 </section>
-<section class="kpis"><div class="kpi"><small>전체 인원</small><b id="kpiTotal">-</b><span>등록 직원 수</span></div><div class="kpi"><small>2026년 입사자</small><b id="kpiJoin">-</b><span id="kpiJoinSub">신규 인원</span></div><div class="kpi"><small>2026년 퇴사자</small><b id="kpiLeave">-</b><span id="kpiLeaveSub">퇴사 인원</span></div><div class="kpi"><small>생일 예정자</small><b id="kpiBirthday">-</b><span id="kpiBirthdaySub">오늘 기준 가장 가까운 생일</span></div></section>
+<section class="kpis"><div class="kpi" data-topkpi="total" style="cursor:pointer"><small>전체 인원</small><b id="kpiTotal">-</b><span>등록 직원 수</span></div><div class="kpi" data-topkpi="join" style="cursor:pointer"><small>2026년 입사자</small><b id="kpiJoin">-</b><span id="kpiJoinSub">신규 인원</span></div><div class="kpi" data-topkpi="leave" style="cursor:pointer"><small>2026년 퇴사자</small><b id="kpiLeave">-</b><span id="kpiLeaveSub">퇴사 인원</span></div><div class="kpi" data-topkpi="birthday" style="cursor:pointer"><small>생일 예정자</small><b id="kpiBirthday">-</b><span id="kpiBirthdaySub">오늘 기준 가장 가까운 생일</span></div></section>
 <section class="grid"><div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap"><div><h2>품질보증팀 인원 현황</h2><div class="sub">엑셀 데이터 기준 직원별 MBTI 및 주업무 반영</div></div></div><div class="tablewrap"><table><thead><tr><th>순번</th><th>성명</th><th>주업무</th><th>MBTI</th><th>생일</th><th>양/음</th><th>입사일</th><th>년차</th></tr></thead><tbody id="tbody"></tbody></table></div></div></section>
 <section class="bottom-grid"><div class="card"><h2>업무현황</h2><div class="sub">항목을 더블클릭하면 관련 담당자가 표시됩니다.</div><div class="typebox" id="workSummary"></div></div><div class="card"><h2>MBTI 분포</h2><div class="sub">동일 MBTI 인원 수 비교</div><div class="typebox" id="typeSummary" style="margin-top:16px"></div></div></section>
 <section class="cards" id="personCards" style="display:none"></section>
@@ -416,6 +416,56 @@ function updateKpi(){
     if(nb){if(bEl)bEl.textContent=nb.name;if(bSub)bSub.textContent=nb.birthday+' · '+nb.mbti;}
     else{if(bEl)bEl.textContent='-';if(bSub)bSub.textContent='등록된 생일 없음';}
   }
+
+  // 상단 KPI 더블클릭 팝업
+  document.querySelectorAll('[data-topkpi]').forEach(function(el){
+    el.ondblclick=function(){
+      var type=el.getAttribute('data-topkpi');
+      var title='', items=[];
+      if(type==='total'){
+        title='👥 전체 인원 ('+employees.length+'명)';
+        items=employees.map(function(e){
+          return '<li><b>'+e.name+'</b><span style="display:block;font-size:12px;color:var(--muted);margin-top:2px">'+e.job+' · 입사 '+formatJoin(e.join)+' · '+tenure(e.join)+'</span></li>';
+        });
+        if(!items.length) items=['<li>등록된 직원이 없습니다.</li>'];
+      } else if(type==='join'){
+        title='🆕 2026년 입사자';
+        var joinList=employees.filter(function(e){var d=joinDate(e.join);return d&&d.getFullYear()===2026;});
+        items=joinList.map(function(e){
+          return '<li><b>'+e.name+'</b><span style="display:block;font-size:12px;color:var(--muted);margin-top:2px">'+e.job+' · 입사 '+formatJoin(e.join)+'</span></li>';
+        });
+        if(!items.length) items=['<li>2026년 입사자가 없습니다.</li>'];
+      } else if(type==='leave'){
+        title='🚪 2026년 퇴사자';
+        var leaveData=JSON.parse(localStorage.getItem('qaLeave')||'[]');
+        var leaveList=leaveData.filter(function(l){return l.year===2026;});
+        items=leaveList.map(function(l){
+          return '<li><b style="color:#dc2626">'+l.name+'</b><span style="display:block;font-size:12px;color:var(--muted);margin-top:2px">'+l.date+' · '+l.note+'</span></li>';
+        });
+        if(!items.length) items=['<li>2026년 퇴사자가 없습니다.</li>'];
+      } else if(type==='birthday'){
+        title='🎂 생일 예정자 (30일 이내)';
+        var now2=new Date();
+        var soonList=[];
+        employees.forEach(function(e){
+          if(!e.birthday||e.birthday==='-') return;
+          var b=birthdayObj(e.birthday); if(!b.month||!b.day) return;
+          var d=new Date(now2.getFullYear(),b.month-1,b.day);
+          if(d<new Date(now2.getFullYear(),now2.getMonth(),now2.getDate())) d.setFullYear(now2.getFullYear()+1);
+          var diff=Math.ceil((d-now2)/(1000*60*60*24));
+          if(diff<=30) soonList.push({emp:e,diff:diff,date:(b.month+'월 '+b.day+'일')});
+        });
+        soonList.sort(function(a,b){return a.diff-b.diff;});
+        items=soonList.map(function(s){
+          return '<li><b>'+s.emp.name+'</b><span style="display:block;font-size:12px;color:var(--muted);margin-top:2px">'+s.date+' · '+s.diff+'일 후 · '+s.emp.job+'</span></li>';
+        });
+        if(!items.length) items=['<li>30일 이내 생일 예정자가 없습니다.</li>'];
+      }
+      document.getElementById('popupTitle').textContent=title;
+      document.getElementById('popupList').innerHTML=items.join('');
+      document.getElementById('popup').classList.add('show');
+    };
+  });
 }
 function render(){employees.forEach(function(e,i){e.no=i+1;});updateKpi();var tbody=document.getElementById('tbody');tbody.innerHTML=employees.map(function(e,idx){return '<tr><td>'+e.no+'</td><td><b>'+e.name+'</b></td><td>'+e.job+'</td><td><span class="mbti">'+e.mbti+'</span></td><td>'+e.birthday+'</td><td><span class="solar">'+e.solar+'</span></td><td>'+formatJoin(e.join)+'</td><td><b>'+tenure(e.join)+'</b></td></tr>';}).join('');document.getElementById('personCards').innerHTML=employees.map(function(e){return '<article class="person"><div class="avatar">'+e.name.slice(0,1)+'</div><h3>'+e.name+'</h3><p>'+e.job+'</p><p><b class="mbti">'+e.mbti+'</b></p><p>'+(desc[e.mbti]||'')+'</p><div class="tagrow"><span class="tag">🎂 '+e.birthday+'</span><span class="tag">🏢 '+e.join+'</span><span class="tag">📌 '+tenure(e.join)+'</span></div></article>';}).join('');var c=counts(employees);
 if(c['-']) delete c['-'];document.getElementById('typeSummary').innerHTML=Object.entries(c).sort(function(a,b){return b[1]-a[1];}).map(function(x){return '<div class="type" data-mbti="'+x[0]+'"><small>'+x[0]+'</small><b>'+x[1]+'명</b></div>';}).join('');
@@ -497,7 +547,7 @@ render();
         '<td><b>'+e.name+'</b></td>'+
         '<td>'+e.job+'</td>'+
         '<td style="text-align:center;color:#111827;font-weight:800">'+base+'일</td>'+
-        '<td class="vac-detail-td" data-name="'+e.name+'" data-type="ot" style="text-align:center;color:#059669;font-weight:800;cursor:pointer" title="더블클릭 시 이력 확인">+'+ot+'일</td>'+
+        '<td class="vac-detail-td" data-name="'+e.name+'" data-type="ot" style="text-align:center;color:#22c55e;font-weight:800;cursor:pointer" title="더블클릭 시 이력 확인">+'+ot+'일</td>'+
         '<td style="text-align:center;color:#111827;font-weight:800">'+total+'일</td>'+
         '<td class="vac-detail-td" data-name="'+e.name+'" data-type="used" style="text-align:center;color:#7c3aed;font-weight:800;cursor:pointer" title="더블클릭 시 이력 확인">'+used+'일</td>'+
         '<td class="vac-detail-td" data-name="'+e.name+'" data-type="remain" style="text-align:center;color:#2563eb;font-weight:800;cursor:pointer" title="더블클릭 시 이력 확인">'+remain+'일</td>'+
@@ -555,7 +605,7 @@ render();
           if(!ots.length){ items=['<li style="color:var(--muted);font-size:14px">등록된 보상휴가가 없습니다.</li>']; }
           else {
             items=ots.map(function(o){
-              return '<li><span style="font-size:13px">'+o.date+' · '+o.note+' · <b style="color:#059669">+'+o.earned+'일</b></span></li>';
+              return '<li><span style="font-size:13px">'+o.date+' · '+o.note+' · <b style="color:#22c55e">+'+o.earned+'일 보상</b></span></li>';
             });
             var total=ots.reduce(function(s,o){return s+Number(o.earned);},0);
             items.push('<li style="border-top:1px solid var(--line);margin-top:4px;padding-top:8px;font-size:13px">합계 <b style="color:#059669">+'+total+'일</b></li>');
@@ -634,7 +684,7 @@ render();
 
     document.getElementById('vacKpis').innerHTML=
       '<div class="vac-kpi" data-kpi="warn" style="cursor:pointer"><small>주의 인원</small><b style="color:#dc2626">'+warn+'명</b><span>소진율 90% 이상</span></div>'+
-      '<div class="vac-kpi" data-kpi="monthot" style="cursor:pointer"><small>이번달 보상 인원</small><b style="color:#059669">'+thisMonthOt+'명</b><span>'+thisMonth+'월 보상휴가 등록자</span></div>'+
+      '<div class="vac-kpi" data-kpi="monthot" style="cursor:pointer"><small>이번달 보상 인원</small><b style="color:#22c55e">'+thisMonthOt+'명</b><span>'+thisMonth+'월 보상휴가 등록자</span></div>'+
       '<div class="vac-kpi" data-kpi="monthvac" style="cursor:pointer"><small>이번달 휴가 인원</small><b style="color:#7c3aed">'+thisMonthVac+'명</b><span>'+thisMonth+'월 휴가 사용자</span></div>'+
       '<div class="vac-kpi" data-kpi="upcoming" style="cursor:pointer"><small>휴가 예정 인원</small><b style="color:#2563eb">'+upcoming+'명</b><span>향후 휴가 예정자</span></div>';
 
@@ -955,7 +1005,7 @@ updateKpi();
     var idx=document.getElementById('dmEmpIndex').value;
     if(idx===''){data.no=employees.length+1;employees.push(data);}
     else{data.no=employees[Number(idx)].no;employees[Number(idx)]=data;}
-    saveEmployees();render();
+    saveEmployees();render();updateKpi();
     document.getElementById('dmgrEmpForm').style.display='none';
     renderDmgrEmpList();
   });
@@ -964,7 +1014,7 @@ updateKpi();
     var idx=Number(document.getElementById('dmEmpIndex').value);
     if(!confirm(employees[idx].name+' 직원을 삭제할까요?')) return;
     employees.splice(idx,1);
-    saveEmployees();render();
+    saveEmployees();render();updateKpi();
     document.getElementById('dmgrEmpForm').style.display='none';
     renderDmgrEmpList();
   });
@@ -1213,7 +1263,7 @@ updateKpi();
       return '<tr>'+
         '<td><b>'+e.name+'</b></td><td>'+e.job+'</td>'+
         '<td style="text-align:center;color:#111827;font-weight:800">'+base+'일</td>'+
-        '<td style="text-align:center;color:#059669;font-weight:800">+'+otEarned+'일</td>'+
+        '<td style="text-align:center;color:#22c55e;font-weight:800">+'+otEarned+'일</td>'+
         '<td style="text-align:center;color:#111827;font-weight:800">'+total+'일</td>'+
         '<td style="text-align:center;color:#7c3aed;font-weight:800">'+used+'일</td>'+
         '<td style="text-align:center;color:#2563eb;font-weight:800">'+remain+'일</td>'+
@@ -1229,7 +1279,7 @@ updateKpi();
     var upcoming=employees.filter(function(e){var d=vd[e.name];if(!d||!d.logs)return false;return d.logs.some(function(l){return l.date>today2;});}).length;
     document.getElementById('vacKpis').innerHTML=
       '<div class="vac-kpi" data-kpi="warn" style="cursor:pointer"><small>주의 인원</small><b style="color:#dc2626">'+warn+'명</b><span>소진율 90% 이상</span></div>'+
-      '<div class="vac-kpi" data-kpi="monthot" style="cursor:pointer"><small>이번달 보상 인원</small><b style="color:#059669">'+thisMonthOt+'명</b><span>'+tm+'월 보상휴가 등록자</span></div>'+
+      '<div class="vac-kpi" data-kpi="monthot" style="cursor:pointer"><small>이번달 보상 인원</small><b style="color:#22c55e">'+thisMonthOt+'명</b><span>'+tm+'월 보상휴가 등록자</span></div>'+
       '<div class="vac-kpi" data-kpi="monthvac" style="cursor:pointer"><small>이번달 휴가 인원</small><b style="color:#7c3aed">'+thisMonthVac+'명</b><span>'+tm+'월 휴가 사용자</span></div>'+
       '<div class="vac-kpi" data-kpi="upcoming" style="cursor:pointer"><small>휴가 예정 인원</small><b style="color:#2563eb">'+upcoming+'명</b><span>향후 휴가 예정자</span></div>';
   });
