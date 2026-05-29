@@ -6,7 +6,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>품질보증팀 인원현황</title>
+<title>충주공장 품질보증팀 인원현황</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root{--card:#fff;--ink:#172033;--muted:#6b7280;--blue:#2563eb;--line:#e5e7eb;--shadow:0 18px 40px rgba(15,23,42,.10);--radius:22px}
@@ -14,7 +14,7 @@
 .wrap{max-width:1180px;margin:0 auto;padding:28px 18px 52px}.hero{background:linear-gradient(135deg,#0f172a,#1e3a8a 55%,#2563eb);border-radius:28px;color:#fff;padding:34px;box-shadow:var(--shadow)}
 .eyebrow{font-size:13px;letter-spacing:.22em;font-weight:800;opacity:.8}.hero h1{margin:8px 0;font-size:clamp(28px,4vw,46px);line-height:1.1}.hero p{margin:0;color:#dbeafe}.meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.pill{border-radius:999px;padding:8px 13px;font-size:13px;font-weight:750;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.20)}
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0}.kpi,.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 8px 24px rgba(15,23,42,.06)}.kpi{padding:20px}.kpi small{color:var(--muted);font-weight:800}.kpi b{display:block;font-size:32px;margin-top:6px}.kpi span,.sub{font-size:13px;color:var(--muted)}
-.add-form{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.add-form input,.add-form select{border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px}.add-form button{border:0;border-radius:12px;background:var(--blue);color:#fff;font-weight:900;cursor:pointer}.grid{display:grid;grid-template-columns:1fr;gap:18px}.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.card{padding:20px}.card h2{margin:0 0 8px;font-size:20px}.sub{margin-bottom:16px}
+.add-form{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.add-form input,.add-form select{border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px}.add-form button{border:0;border-radius:12px;background:var(--blue);color:#fff;font-weight:900;cursor:pointer}.grid{display:grid;grid-template-columns:1fr;gap:18px}.bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.card{padding:20px}.card h2{margin:0 0 8px;font-size:24px}.sub{margin-bottom:16px}
 table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left}
 th:nth-child(5),th:nth-child(6),th:nth-child(7),th:nth-child(8),
 td:nth-child(5),td:nth-child(6),td:nth-child(7),td:nth-child(8){text-align:center;}th{color:#475569;font-size:12px;background:#f8fafc}tbody tr:hover{background:#f8fbff}.mbti{font-weight:900;color:#1d4ed8;background:#eaf2ff;border-radius:999px;padding:5px 9px;display:inline-block;min-width:52px;text-align:center}.solar{font-size:12px;background:#ecfdf5;color:#047857;padding:4px 8px;border-radius:999px;font-weight:800}
@@ -68,7 +68,7 @@ select option,
 <main class="wrap">
 <section class="hero">
   <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px">
-    <div><div class="eyebrow">EMPLOYEE REPORT</div><h1>품질보증팀 인원현황</h1><p style="margin:6px 0 0;color:#dbeafe;font-size:14px">목제가구의 생산부터 사후관리까지 전 과정의 품질 및 고객 만족을 보증합니다.</p></div>
+    <div><div class="eyebrow">EMPLOYEE REPORT</div><h1>충주공장 품질보증팀 인원현황</h1><p style="margin:6px 0 0;color:#dbeafe;font-size:14px">목제가구의 생산부터 사후관리까지 전 과정의 품질 및 고객 만족을 보증합니다.</p></div>
     <button id="openDataMgr" style="border:0;border-radius:16px;background:rgba(255,255,255,0.18);border:1.5px solid rgba(255,255,255,0.35);color:#fff;font-weight:900;font-size:14px;padding:12px 20px;cursor:pointer;margin-top:6px">⚙️ 데이터 관리</button>
   </div>
 </section>
@@ -82,7 +82,7 @@ select option,
   <div class="card">
     <div class="vac-header">
       <div>
-        <h2 style="margin:0 0 4px">🏖️ 직원별 휴가 잔여일 관리</h2>
+        <h2 style="margin:0 0 4px;font-size:24px">직원별 휴가 잔여일 관리</h2>
         <div class="sub" style="margin:0">연차 기준 사용/잔여 현황을 확인하고 휴가 이력을 등록합니다.</div>
       </div>
       
@@ -115,7 +115,7 @@ select option,
     <div style="display:flex;gap:8px;margin:16px 0 0;flex-wrap:wrap">
       <button class="dmgr-tab active" data-tab="emp" style="border:0;border-radius:12px;padding:9px 18px;font-weight:900;font-size:14px;cursor:pointer;background:#2563eb;color:#fff">👤 직원 정보</button>
       <button class="dmgr-tab" data-tab="vac" style="border:0;border-radius:12px;padding:9px 18px;font-weight:900;font-size:14px;cursor:pointer;background:#f1f5f9;color:#475569">🏖️ 연차 설정</button>
-      <button class="dmgr-tab" data-tab="log" style="border:0;border-radius:12px;padding:9px 18px;font-weight:900;font-size:14px;cursor:pointer;background:#f1f5f9;color:#475569">📋 휴가 이력</button>
+      <button class="dmgr-tab" data-tab="log" style="border:0;border-radius:12px;padding:9px 18px;font-weight:900;font-size:14px;cursor:pointer;background:#f1f5f9;color:#475569">📋 휴가 등록</button>
       <button class="dmgr-tab" data-tab="ot" style="border:0;border-radius:12px;padding:9px 18px;font-weight:900;font-size:14px;cursor:pointer;background:#f1f5f9;color:#475569">⏰ 보상 휴가</button>
       <button class="dmgr-tab" data-tab="leave" style="border:0;border-radius:12px;padding:9px 18px;font-weight:900;font-size:14px;cursor:pointer;background:#f1f5f9;color:#475569">🚪 퇴사자</button>
     </div>
@@ -183,9 +183,16 @@ select option,
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px">
         <input id="dmgrLogDate" type="date" style="border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:#111827">
-        <input id="dmgrLogDays" type="number" min="0.25" step="0.25" placeholder="일수" style="border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:#111827">
+        <select id="dmgrLogDays" style="border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:#111827">
+          <option value="0.25">2시간 (0.25일)</option>
+          <option value="0.5">4시간 (0.5일)</option>
+          <option value="0.75">6시간 (0.75일)</option>
+          <option value="1" selected>8시간 (1일)</option>
+          <option value="1.25">10시간 (1.25일)</option>
+          <option value="1.5">12시간 (1.5일)</option>
+        </select>
         <input id="dmgrLogNote" placeholder="메모" style="border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:#111827">
-        <button id="dmgrLogAdd" type="button" style="border:0;border-radius:10px;background:#059669;color:#fff;font-weight:900;cursor:pointer">추가</button>
+        <button id="dmgrLogAdd" type="button" style="border:0;border-radius:10px;background:#22c55e;color:#fff;font-weight:900;cursor:pointer">추가</button>
       </div>
       <ul id="dmgrLogList" style="list-style:none;margin:0;padding:0"></ul>
     </div>
@@ -222,6 +229,8 @@ select option,
           <option value="4">4시간 (0.5일)</option>
           <option value="6">6시간 (0.75일)</option>
           <option value="8" selected>8시간 (1일)</option>
+          <option value="10">10시간 (1.25일)</option>
+          <option value="12">12시간 (1.5일)</option>
         </select>
         <input id="dmgrOtNote" placeholder="메모 (예: 월말재고)" style="border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:#111827">
         <button id="dmgrOtAdd" type="button" style="border:0;border-radius:10px;background:#7c3aed;color:#fff;font-weight:900;cursor:pointer">적립</button>
@@ -611,7 +620,7 @@ render();
             items.push('<li style="border-top:1px solid var(--line);margin-top:4px;padding-top:8px;font-size:13px">합계 <b style="color:#059669">+'+total+'일</b></li>');
           }
         } else if(type==='used'){
-          title='🏖️ '+name+' · 휴가 사용 이력';
+          title=''+name+' · 휴가 사용 이력';
           var logs=(d.logs||[]).slice().sort(function(a,b){return a.date<b.date?-1:1;});
           if(!logs.length){ items=['<li style="color:var(--muted);font-size:14px">사용 이력이 없습니다.</li>']; }
           else {
@@ -712,7 +721,7 @@ render();
               '총 '+t+'일 · 사용 <b style="color:#7c3aed">'+u+'일</b> · 잔여 <b style="color:#2563eb">'+remain+'일</b> · <b style="color:#dc2626">'+pct+'%</b></span></li>';
           });
         } else if(kpi==='monthvac'){
-          title='🏖️ '+tm2+'월 휴가 사용자';
+          title=''+tm2+'월 휴가 사용자';
           list=employees.filter(function(e){
             var d=vacData[e.name];
             if(!d||!d.logs) return false;
@@ -1117,10 +1126,10 @@ updateKpi();
   document.getElementById('dmgrLogAdd').addEventListener('click',function(){
     var name=document.getElementById('dmgrLogEmpSel').value;
     var date=document.getElementById('dmgrLogDate').value;
-    var days=Number(document.getElementById('dmgrLogDays').value);
+    var days=parseFloat(document.getElementById('dmgrLogDays').value)||0;
     var note=document.getElementById('dmgrLogNote').value.trim()||'-';
     if(!name){alert('직원을 선택하세요.');return;}
-    if(!date||!days||days<=0){alert('날짜와 일수를 입력하세요.');return;}
+    if(!date||!days){alert('날짜를 입력하세요.');return;}
     var vd=getVacData();
     if(!vd[name]) vd[name]={total:0,logs:[]};
     if(!vd[name].logs) vd[name].logs=[];
@@ -1128,7 +1137,7 @@ updateKpi();
     vd[name].logs.sort(function(a,b){return a.date<b.date?-1:1;});
     saveVacData(vd);
     document.getElementById('dmgrLogDate').value='';
-    document.getElementById('dmgrLogDays').value='';
+    document.getElementById('dmgrLogDays').value='1';
     document.getElementById('dmgrLogNote').value='';
     renderDmgrLogList(name);
     document.dispatchEvent(new CustomEvent('vacUpdated'));
