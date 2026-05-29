@@ -610,7 +610,7 @@ render();
 
         if(type==='ot'){
           title='⏰ '+name+' · 보상휴가 이력';
-          var ots=(d.overtime||[]).slice().sort(function(a,b){return a.date>b.date?-1:1;});
+          var ots=(d.overtime||[]).slice().sort(function(a,b){return a.date<b.date?-1:1;});
           if(!ots.length){ items=['<li style="color:var(--muted);font-size:14px">등록된 보상휴가가 없습니다.</li>']; }
           else {
             items=ots.map(function(o){
@@ -621,7 +621,7 @@ render();
           }
         } else if(type==='used'){
           title=''+name+' · 휴가 사용 이력';
-          var logs=(d.logs||[]).slice().sort(function(a,b){return a.date>b.date?-1:1;});
+          var logs=(d.logs||[]).slice().sort(function(a,b){return a.date<b.date?-1:1;});
           if(!logs.length){ items=['<li style="color:var(--muted);font-size:14px">사용 이력이 없습니다.</li>']; }
           else {
             items=logs.map(function(l){
@@ -722,29 +722,31 @@ render();
           });
         } else if(kpi==='monthvac'){
           title=''+tm2+'월 휴가 사용자';
-          list=employees.filter(function(e){
+          var allLogs=[];
+          employees.forEach(function(e){
             var d=vacData[e.name];
-            if(!d||!d.logs) return false;
-            return d.logs.some(function(l){var dt=new Date(l.date);return dt.getFullYear()===ty2&&dt.getMonth()+1===tm2;});
-          }).map(function(e){
-            var d=vacData[e.name];
-            var logs=d.logs.filter(function(l){var dt=new Date(l.date);return dt.getFullYear()===ty2&&dt.getMonth()+1===tm2;}).sort(function(a,b){return a.date>b.date?-1:1;});
-            var detail=logs.map(function(l){return '<span style="display:block;font-size:12px;color:var(--muted);margin-top:3px">'+l.date+' · '+l.note+' · <b style="color:#7c3aed">'+l.days+'일</b></span>';}).join('');
-            return '<li><b>'+e.name+'</b>'+detail+'</li>';
+            if(!d||!d.logs) return;
+            d.logs.filter(function(l){var dt=new Date(l.date);return dt.getFullYear()===ty2&&dt.getMonth()+1===tm2;})
+              .forEach(function(l){allLogs.push({name:e.name,date:l.date,note:l.note,days:l.days});});
+          });
+          allLogs.sort(function(a,b){if(a.date!==b.date)return a.date<b.date?-1:1;return a.name<b.name?-1:1;});
+          list=allLogs.map(function(l){
+            return '<li><b>'+l.name+'</b><span style="display:block;font-size:12px;color:var(--muted);margin-top:3px">'+l.date+' · '+l.note+' · <b style="color:#7c3aed">'+l.days+'일</b></span></li>';
           });
         } else if(kpi==='monthot'){
           title='⏰ '+tm2+'월 보상휴가 등록자';
-          list=employees.filter(function(e){
+          var allOts=[];
+          employees.forEach(function(e){
             var d=vacData[e.name];
-            if(!d||!d.overtime) return false;
-            return d.overtime.some(function(o){var dt=new Date(o.date);return dt.getFullYear()===ty2&&dt.getMonth()+1===tm2;});
-          }).map(function(e){
-            var d=vacData[e.name];
-            var ots=d.overtime.filter(function(o){var dt=new Date(o.date);return dt.getFullYear()===ty2&&dt.getMonth()+1===tm2;}).sort(function(a,b){return a.date>b.date?-1:1;});
-            var sum=ots.reduce(function(s,o){return s+Number(o.earned);},0);
-            var detail=ots.map(function(o){return '<span style="display:block;font-size:12px;color:var(--muted);margin-top:3px">'+o.date+' · '+o.note+' · <b style="color:#059669">+'+o.earned+'일 보상</b></span>';}).join('');
-            return '<li><b>'+e.name+'</b>'+detail+'</li>';
+            if(!d||!d.overtime) return;
+            d.overtime.filter(function(o){var dt=new Date(o.date);return dt.getFullYear()===ty2&&dt.getMonth()+1===tm2;})
+              .forEach(function(o){allOts.push({name:e.name,date:o.date,note:o.note,earned:o.earned,hours:o.hours});});
           });
+          allOts.sort(function(a,b){if(a.date!==b.date)return a.date<b.date?-1:1;return a.name<b.name?-1:1;});
+          list=allOts.map(function(o){
+            return '<li><b>'+o.name+'</b><span style="display:block;font-size:12px;color:var(--muted);margin-top:3px">'+o.date+' · '+o.note+' · <b style="color:#22c55e">+'+o.earned+'일 보상</b></span></li>';
+          });
+
         } else if(kpi==='upcoming'){
           title='📅 휴가 예정자';
           list=employees.filter(function(e){
@@ -1099,7 +1101,7 @@ updateKpi();
     if(!d.logs||d.logs.length===0){
       ul.innerHTML='<li style="color:var(--muted);font-size:14px;padding:12px">등록된 이력이 없습니다.</li>';return;
     }
-    ul.innerHTML=(d.logs||[]).slice().sort(function(a,b){return a.date>b.date?-1:1;}).map(function(l,i){
+    ul.innerHTML=(d.logs||[]).slice().sort(function(a,b){return a.date<b.date?-1:1;}).map(function(l,i){
       return '<li style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;background:#f8fafc">'+
         '<div style="font-size:13px;color:var(--muted)">'+l.date+' · '+l.note+' · <b style="color:#7c3aed">'+l.days+'일</b></div>'+
         '<div style="display:flex;align-items:center;gap:8px">'+
@@ -1165,7 +1167,7 @@ updateKpi();
     if(!ot.length){
       ul.innerHTML='<li style="color:var(--muted);font-size:14px;padding:12px">등록된 보상휴가가 없습니다.</li>';return;
     }
-    ul.innerHTML=(ot.slice().sort(function(a,b){return a.date>b.date?-1:1;})).map(function(o,i){
+    ul.innerHTML=(ot.slice().sort(function(a,b){return a.date<b.date?-1:1;})).map(function(o,i){
       return '<li style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;background:#f0fdf4">'+
         '<div style="font-size:13px;color:var(--muted)">'+o.date+' · '+o.hours+'시간 · '+o.note+' · <b style="color:#22c55e">+'+o.earned+'일 보상</b></div>'+
         '<div style="display:flex;align-items:center;gap:8px">'+
