@@ -184,12 +184,14 @@ select option,
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px">
         <input id="dmgrLogDate" type="date" style="border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:#111827">
         <select id="dmgrLogDays" style="border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:#111827">
+          <option value="0.125">1시간 (0.125일)</option>
           <option value="0.25">2시간 (0.25일)</option>
+          <option value="0.375">3시간 (0.375일)</option>
           <option value="0.5">4시간 (0.5일)</option>
+          <option value="0.625">5시간 (0.625일)</option>
           <option value="0.75">6시간 (0.75일)</option>
+          <option value="0.875">7시간 (0.875일)</option>
           <option value="1" selected>8시간 (1일)</option>
-          <option value="1.25">10시간 (1.25일)</option>
-          <option value="1.5">12시간 (1.5일)</option>
         </select>
         <input id="dmgrLogNote" placeholder="메모" style="border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:#111827">
         <button id="dmgrLogAdd" type="button" style="border:0;border-radius:10px;background:#22c55e;color:#fff;font-weight:900;cursor:pointer">추가</button>
@@ -214,7 +216,7 @@ select option,
     <!-- 탭: 보상휴가 -->
     <div id="dmgr-ot" class="dmgr-panel" style="display:none;margin-top:16px">
       <div style="background:#f5f3ff;border-radius:12px;padding:11px 14px;margin-bottom:14px;font-size:13px;color:#6d28d9;font-weight:700">
-        💡 주말·공휴일 특근 시 대체휴가를 등록합니다. (8시간 = 1일, 4시간 = 0.5일 적립)
+        💡 주말·공휴일 특근 시 대체휴가를 등록합니다. (8시간 = 1일, 1시간 단위 선택 가능)
       </div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
         <select id="dmgrOtEmpSel" style="border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;color:#111827;font-weight:700">
@@ -225,12 +227,14 @@ select option,
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px">
         <input id="dmgrOtDate" type="date" style="border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:#111827">
         <select id="dmgrOtHours" style="border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:#111827">
+          <option value="1">1시간 (0.125일)</option>
           <option value="2">2시간 (0.25일)</option>
+          <option value="3">3시간 (0.375일)</option>
           <option value="4">4시간 (0.5일)</option>
+          <option value="5">5시간 (0.625일)</option>
           <option value="6">6시간 (0.75일)</option>
+          <option value="7">7시간 (0.875일)</option>
           <option value="8" selected>8시간 (1일)</option>
-          <option value="10">10시간 (1.25일)</option>
-          <option value="12">12시간 (1.5일)</option>
         </select>
         <input id="dmgrOtNote" placeholder="메모 (예: 월말재고)" style="border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;color:#111827">
         <button id="dmgrOtAdd" type="button" style="border:0;border-radius:10px;background:#7c3aed;color:#fff;font-weight:900;cursor:pointer">적립</button>
@@ -944,11 +948,42 @@ updateKpi();
     renderLeaveList();
     document.getElementById('dataMgrPopup').classList.add('show');
   });
+
+  function resetDataMgr(){
+    // 탭 초기화 - 직원 정보 탭으로
+    document.querySelectorAll('.dmgr-tab').forEach(function(b){b.style.background='#f1f5f9';b.style.color='#475569';});
+    var empTab=document.querySelector('.dmgr-tab[data-tab="emp"]');
+    if(empTab){empTab.style.background='#2563eb';empTab.style.color='#fff';}
+    document.querySelectorAll('.dmgr-panel').forEach(function(p){p.style.display='none';});
+    var empPanel=document.getElementById('dmgr-emp');
+    if(empPanel) empPanel.style.display='block';
+    // 직원 폼 닫기
+    document.getElementById('dmgrEmpForm').style.display='none';
+    // 휴가 등록 탭 선택 초기화
+    var logSel=document.getElementById('dmgrLogEmpSel');
+    if(logSel){logSel.value='';document.getElementById('dmgrLogList').innerHTML='';document.getElementById('dmgrLogRemain').innerHTML='';}
+    // 보상 휴가 탭 선택 초기화
+    var otSel=document.getElementById('dmgrOtEmpSel');
+    if(otSel){otSel.value='';document.getElementById('dmgrOtList').innerHTML='';document.getElementById('dmgrOtSummary').innerHTML='';}
+    // 입력 폼 초기화
+    var logDate=document.getElementById('dmgrLogDate'); if(logDate) logDate.value='';
+    var logNote=document.getElementById('dmgrLogNote'); if(logNote) logNote.value='';
+    var logDays=document.getElementById('dmgrLogDays'); if(logDays) logDays.value='1';
+    var otDate=document.getElementById('dmgrOtDate'); if(otDate) otDate.value='';
+    var otNote=document.getElementById('dmgrOtNote'); if(otNote) otNote.value='';
+    var otHours=document.getElementById('dmgrOtHours'); if(otHours) otHours.value='8';
+    var leaveEmpName=document.getElementById('leaveEmpName'); if(leaveEmpName) leaveEmpName.value='';
+    var leaveDate=document.getElementById('leaveDate'); if(leaveDate) leaveDate.value='';
+    var leaveNote=document.getElementById('leaveNote'); if(leaveNote) leaveNote.value='';
+    // 직원 목록 다시 렌더
+    renderDmgrEmpList();
+  }
   document.getElementById('closeDataMgr').addEventListener('click',function(){
     document.getElementById('dataMgrPopup').classList.remove('show');
+    resetDataMgr();
   });
   document.getElementById('dataMgrPopup').addEventListener('click',function(e){
-    if(e.target.id==='dataMgrPopup') document.getElementById('dataMgrPopup').classList.remove('show');
+    if(e.target.id==='dataMgrPopup'){document.getElementById('dataMgrPopup').classList.remove('show');resetDataMgr();}
   });
 
   /* ── 직원 탭 ── */
@@ -1139,7 +1174,7 @@ updateKpi();
     vd[name].logs.sort(function(a,b){return a.date<b.date?-1:1;});
     saveVacData(vd);
     document.getElementById('dmgrLogDate').value='';
-    document.getElementById('dmgrLogDays').value='1';
+    document.getElementById('dmgrLogDays').value='1'; // 8시간(1일) 기본값
     document.getElementById('dmgrLogNote').value='';
     renderDmgrLogList(name);
     document.dispatchEvent(new CustomEvent('vacUpdated'));
@@ -1218,7 +1253,7 @@ updateKpi();
     if(!leaveData.length){
       ul.innerHTML='<li style="color:var(--muted);font-size:14px;padding:12px">등록된 퇴사자가 없습니다.</li>';
     } else {
-      ul.innerHTML=leaveData.map(function(l,i){
+      ul.innerHTML=leaveData.slice().sort(function(a,b){return a.date<b.date?-1:1;}).map(function(l,i){
         return '<li style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;background:#fff5f5">'+
           '<div><b style="font-size:14px;color:#dc2626">'+l.name+'</b>'+
           '<span style="margin-left:10px;font-size:13px;color:var(--muted)">'+l.date+' · '+l.note+' <span style="font-size:11px;background:#fee2e2;color:#dc2626;border-radius:999px;padding:2px 7px;font-weight:800">'+l.year+'년</span></span></div>'+
